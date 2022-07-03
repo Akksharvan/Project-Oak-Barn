@@ -3,8 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import linear_model
 
-#name
-
 # Function Used for Cleaner Code
 def convertTimeColumnToDays(dataframe, column_ID):
     temp_list = []
