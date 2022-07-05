@@ -23,7 +23,7 @@ def index():
                 </form>"""
     return html + zip_code + image
 
-def convertTimeColumnToDays(dataframe, column_ID):
+def convert_closing_date_to_days(dataframe, column_ID):
     temp_list = []
 
     for index, value in dataframe[column_ID].items():
@@ -33,14 +33,16 @@ def convertTimeColumnToDays(dataframe, column_ID):
     dataframe[column_ID] = temp_series
 
 def comparable_homes_df(dataframe):
-    return "hello"
+    comparable_dataframe = dataframe
+    return comparable_dataframe
 
 def process_data():
     df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
 
-    timeSeries = df["Closing Date"] - pd.Timestamp(1950, 1, 1)
-    df["Days Since 1950"] = timeSeries
-    convertTimeColumnToDays(df, "Days Since 1950")
+    time_series = df["Closing Date"] - pd.Timestamp(1950, 1, 1)
+    df["Days Since 1950"] = time_series
+    
+    convert_closing_date_to_days(df, "Days Since 1950")
     df.drop(columns = "Closing Date")
 
     # Linear Regression
@@ -52,7 +54,7 @@ def process_data():
 
     fig = Figure()
     ax = fig.subplots()
-    ax.plot(x, reg.predict(x))
+    ax.plot(x, reg.predict(x), "black")
 
     buf = BytesIO()
     fig.savefig(buf, format = "png")
