@@ -14,15 +14,13 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    image = process_data()
-    
     zip_code = str(escape(request.args.get("zip_code", "")))
-    zip_code_html = """<form action = "" method = get> 
-                    <input type = "text" name = "zip_code">
-                    <input type = "submit" value = "Display">
-                </form>"""
+    zip_code_html = generate_form_html("zip_code")
 
-    return zip_code_html + zip_code + image
+    image = process_data()
+
+    final_html = zip_code_html + zip_code + image
+    return final_html
 
 def convert_closing_date_to_days(dataframe, column_ID):
     temp_list = []
@@ -64,6 +62,15 @@ def process_data():
     fig_image = "<img src = 'data:image/png;base64, {}'/>".format(fig_data)
     
     return fig_image
+
+def generate_form_html(criteria):
+    generated_form_html = """<form action = "" method = get>
+                            <label for = "{}">{}: </label>
+                            <input type = "text" id = "{}" name = "{}">
+                            <input type = "submit" value = "Submit">
+                        </form>""".format(criteria, criteria.upper().replace("_", " "), criteria, criteria)
+    
+    return generated_form_html
 
 if __name__ == "__main__":
     app.run(host = "127.0.0.1", port = 8080, debug = True)
