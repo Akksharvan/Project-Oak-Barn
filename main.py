@@ -3,22 +3,25 @@ from flask import request, escape
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+
+import base64
+from io import BytesIO
+
+from matplotlib.figure import Figure
 from sklearn import linear_model
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    score = "<p>" + process_data() + "</p>"
-    print(score)
+    image = process_data()
 
     zip_code = str(escape(request.args.get("zip_code", "")))
     html = """<form action = "" method = get> 
                     <input type = "text" name = "zip_code">
                     <input type = "submit" value = "Display">
                 </form>"""
-    return html + zip_code + score
+    return html + zip_code + image
 
 def convertTimeColumnToDays(dataframe, column_ID):
     temp_list = []
@@ -47,7 +50,17 @@ def process_data():
     reg = linear_model.LinearRegression()
     reg.fit(x, y)
 
-    return str(reg.score(x, y))
+    fig = Figure()
+    ax = fig.subplots()
+    ax.plot(x, reg.predict(x))
+
+    buf = BytesIO()
+    fig.savefig(buf, format = "png")
+
+    fig_data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    fig_image = "<img src = 'data:image/png;base64, {}'/>".format(fig_data)
+    
+    return fig_image
 
 if __name__ == "__main__":
     app.run(host = "127.0.0.1", port = 8080, debug = True)
