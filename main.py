@@ -18,14 +18,19 @@ def index():
     df = clean_data(df)
 
     zip_code = str(escape(request.args.get("zip_code", "")))
-    zip_code_html = generate_form_html("zip_code")
+    time = str(escape(request.args.get("time_in_days", "")))
+    living_area = str(escape(request.args.get("living_area_in_square_feet", "")))
+    year_built = str(escape(request.args.get("year_built", "")))
+    beds = str(escape(request.args.get("number_of_beds", "")))
+    full_bath = str(escape(request.args.get("full_baths", "")))
+    half_bath = str(escape(request.args.get("half_baths", "")))
 
-    
+    form_html = generate_form_html("zip_code", "time_in_days", "living_area_in_square_feet", "year_built", "number_of_beds", "full_baths", "half_baths")
 
     df = comparable_homes_df(df)
     image = linear_graph(df)
 
-    final_html = zip_code_html + zip_code
+    final_html = form_html
     return final_html
 
 def convert_closing_date_to_days(dataframe, column_ID):
@@ -71,13 +76,18 @@ def linear_graph(dataframe):
     
     return fig_image
 
-def generate_form_html(criteria):
-    generated_form_html = """<form action = "" method = get>
-                            <label for = "{}">{}: </label>
-                            <input type = "text" id = "{}" name = "{}">
-                            <input type = "submit" value = "Submit">
-                        </form>""".format(criteria, criteria.upper().replace("_", " "), criteria, criteria)
+def generate_form_html(*criteria_list):
+    generated_form_html = "<form action = "" method = get>"
+
+    for criteria in criteria_list:
+        temp_html = "<label for = \"{}\">{}: </label>".format(criteria, criteria.title().replace("_", " "))
+        temp_html_two = "<input type = \"text\" id = \"{}\" name = \"{}\">".format(criteria, criteria)
+        new_line_html = "<br>"
+        generated_form_html += temp_html + temp_html_two + new_line_html
+
+    generated_form_html += "<input type = \"submit\" value = \"Submit\"> </form>"
     
+    print(generated_form_html)
     return generated_form_html
 
 if __name__ == "__main__":
