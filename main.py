@@ -17,43 +17,37 @@ def index():
                 </form>"""
     return html + zip_code
 
+def convertTimeColumnToDays(dataframe, column_ID):
+    temp_list = []
 
-if __name__ == "__main__":
-    app.run(host = "127.0.0.1", port = 8080, debug = True)
+    for index, value in dataframe[column_ID].items():
+        temp_list.append(value.days)
+
+
+    temp_series = pd.Series(temp_list)
+    dataframe[column_ID] = temp_series
 
 def comparable_homes_df(dataframe):
     return "hello"
 
-# # Function Used for Cleaner Code
-# def convertTimeColumnToDays(dataframe, column_ID):
-#     temp_list = []
+def process_data():
+    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
 
-#     for index, value in dataframe[column_ID].items():
-#         temp_list.append(value.days)
+    timeSeries = df["Closing Date"] - pd.Timestamp(1950, 1, 1)
+    df["Days Since 1950"] = timeSeries
+    convertTimeColumnToDays(df, "Days Since 1950")
+    df.drop(columns = "Closing Date")
 
+    # Linear Regression
+    x = df[["Days Since 1950"]]
+    y = df[["Sold Price"]]
 
-#     temp_series = pd.Series(temp_list)
-#     dataframe[column_ID] = temp_series
-
-# # Initializing Primary DataFrame From .csv File
-# df_cols = ["Sold Price"]
-# df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
-
-# # Changing Closing Date Column to Days Since 1950
-# timeSeries = df["Closing Date"] - pd.Timestamp(1950, 1, 1)
-# df["Days Since 1950"] = timeSeries
-# convertTimeColumnToDays(df, "Days Since 1950")
-# df.drop(columns = "Closing Date")
-
-# # Linear Regression
-# x = df[["Days Since 1950"]]
-# y = df[["Sold Price"]]
-
-# reg = linear_model.LinearRegression()
-# reg.fit(x, y)
+    reg = linear_model.LinearRegression()
+    reg.fit(x, y)
 
 
-# fig, ax = plt.subplots()
-# ax.plot(df["Days Since 1950"], reg.predict(x), "g")
+    fig, ax = plt.subplots()
+    ax.plot(df["Days Since 1950"], reg.predict(x), "g")
 
-# plt.show()
+if __name__ == "__main__":
+    app.run(host = "127.0.0.1", port = 8080, debug = True)
