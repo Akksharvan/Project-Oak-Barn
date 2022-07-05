@@ -14,10 +14,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
+    df = clean_data(df)
+    image = linear_graph(df)
+
     zip_code = str(escape(request.args.get("zip_code", "")))
     zip_code_html = generate_form_html("zip_code")
-
-    image = process_data()
 
     final_html = zip_code_html + zip_code + image
     return final_html
@@ -31,20 +33,22 @@ def convert_closing_date_to_days(dataframe, column_ID):
     temp_series = pd.Series(temp_list)
     dataframe[column_ID] = temp_series
 
-def comparable_homes_df(dataframe):
+def comparable_homes_df(dataframe, zip_code, ):
     comparable_dataframe = dataframe
     return comparable_dataframe
 
-def process_data():
-    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
+def clean_data(dataframe):
+    temp_df = dataframe
 
     time_series = df["Closing Date"] - pd.Timestamp(1950, 1, 1)
-    df["Days Since 1950"] = time_series
+    temp_df["Days Since 1950"] = time_series
 
     convert_closing_date_to_days(df, "Days Since 1950")
-    df.drop(columns = "Closing Date")
+    temp_df.drop(columns = "Closing Date")
+    return temp_df
 
-    # Linear Regression
+def linear_graph(dataframe):
+    df = comparable_homes_df(dataframe)
     x = df[["Days Since 1950"]]
     y = df[["Sold Price"]]
 
