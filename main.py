@@ -15,13 +15,14 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     image = process_data()
-
+    
     zip_code = str(escape(request.args.get("zip_code", "")))
-    html = """<form action = "" method = get> 
+    zip_code_html = """<form action = "" method = get> 
                     <input type = "text" name = "zip_code">
                     <input type = "submit" value = "Display">
                 </form>"""
-    return html + zip_code + image
+
+    return zip_code_html + zip_code + image
 
 def convert_closing_date_to_days(dataframe, column_ID):
     temp_list = []
@@ -41,7 +42,7 @@ def process_data():
 
     time_series = df["Closing Date"] - pd.Timestamp(1950, 1, 1)
     df["Days Since 1950"] = time_series
-    
+
     convert_closing_date_to_days(df, "Days Since 1950")
     df.drop(columns = "Closing Date")
 
