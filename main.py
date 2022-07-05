@@ -33,17 +33,17 @@ def convert_closing_date_to_days(dataframe, column_ID):
     temp_series = pd.Series(temp_list)
     dataframe[column_ID] = temp_series
 
-def comparable_homes_df(dataframe, zip_code, ):
+def comparable_homes_df(dataframe, zip_code = "12345"):
     comparable_dataframe = dataframe
     return comparable_dataframe
 
 def clean_data(dataframe):
     temp_df = dataframe
 
-    time_series = df["Closing Date"] - pd.Timestamp(1950, 1, 1)
+    time_series = temp_df["Closing Date"] - pd.Timestamp(1950, 1, 1)
     temp_df["Days Since 1950"] = time_series
 
-    convert_closing_date_to_days(df, "Days Since 1950")
+    convert_closing_date_to_days(temp_df, "Days Since 1950")
     temp_df.drop(columns = "Closing Date")
     return temp_df
 
