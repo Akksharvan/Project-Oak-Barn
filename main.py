@@ -16,12 +16,16 @@ app = Flask(__name__)
 def index():
     df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
     df = clean_data(df)
-    image = linear_graph(df)
 
     zip_code = str(escape(request.args.get("zip_code", "")))
     zip_code_html = generate_form_html("zip_code")
 
-    final_html = zip_code_html + zip_code + image
+    
+
+    df = comparable_homes_df(df)
+    image = linear_graph(df)
+
+    final_html = zip_code_html + zip_code
     return final_html
 
 def convert_closing_date_to_days(dataframe, column_ID):
@@ -48,7 +52,7 @@ def clean_data(dataframe):
     return temp_df
 
 def linear_graph(dataframe):
-    df = comparable_homes_df(dataframe)
+    df = dataframe
     x = df[["Days Since 1950"]]
     y = df[["Sold Price"]]
 
