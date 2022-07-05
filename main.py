@@ -10,19 +10,21 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+    score = "<p>" + process_data() + "</p>"
+    print(score)
+
     zip_code = str(escape(request.args.get("zip_code", "")))
     html = """<form action = "" method = get> 
                     <input type = "text" name = "zip_code">
                     <input type = "submit" value = "Display">
                 </form>"""
-    return html + zip_code
+    return html + zip_code + score
 
 def convertTimeColumnToDays(dataframe, column_ID):
     temp_list = []
 
     for index, value in dataframe[column_ID].items():
         temp_list.append(value.days)
-
 
     temp_series = pd.Series(temp_list)
     dataframe[column_ID] = temp_series
@@ -45,9 +47,7 @@ def process_data():
     reg = linear_model.LinearRegression()
     reg.fit(x, y)
 
-
-    fig, ax = plt.subplots()
-    ax.plot(df["Days Since 1950"], reg.predict(x), "g")
+    return str(reg.score(x, y))
 
 if __name__ == "__main__":
     app.run(host = "127.0.0.1", port = 8080, debug = True)
