@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import request, escape
 
-import numpy as np
 import pandas as pd
 
 import base64
