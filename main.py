@@ -13,9 +13,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
-    df = clean_data(df)
-
     zip_code = str(escape(request.args.get("zip_code", "")))
     time = str(escape(request.args.get("time_in_days", "")))
     living_area = str(escape(request.args.get("living_area_in_square_feet", "")))
@@ -26,10 +23,20 @@ def index():
 
     form_html = generate_form_html("zip_code", "time_in_days", "living_area_in_square_feet", "year_built", "number_of_beds", "full_baths", "half_baths")
 
+    final_html = form_html
+    return final_html
+
+@app.route("/prediction/")
+def prediction():
+    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
+    df = clean_data(df)
+
     df = comparable_homes_df(df)
     image = linear_graph(df)
 
-    final_html = form_html
+    back_button = generate_button_html("Back")
+
+    final_html = image + back_button
     return final_html
 
 def convert_closing_date_to_days(dataframe, column_ID):
@@ -76,7 +83,7 @@ def linear_graph(dataframe):
     return fig_image
 
 def generate_form_html(*criteria_list):
-    generated_form_html = "<form action = "" method = get>"
+    generated_form_html = "<form action = \"/prediction\" method = \"get\">"
 
     for criteria in criteria_list:
         temp_html = "<label for = \"{}\">{}: </label>".format(criteria, criteria.title().replace("_", " "))
@@ -86,8 +93,16 @@ def generate_form_html(*criteria_list):
 
     generated_form_html += "<input type = \"submit\" value = \"Submit\"> </form>"
     
-    print(generated_form_html)
     return generated_form_html
+
+def generate_button_html(button_label):
+    button_html = "<a href = \"/\">"
+    button_html += "<form action = \"/\">"
+    button_html += "<input class = \"btn\" type = \"button\" value = \"{}\">".format(button_label)
+    button_html += "</form>"
+    button_html += "</a>"
+
+    return button_html
 
 if __name__ == "__main__":
     app.run(host = "127.0.0.1", port = 8080, debug = True)
