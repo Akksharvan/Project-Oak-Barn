@@ -1,3 +1,4 @@
+from cProfile import label
 from email import header
 from inspect import formatannotation
 from flask import Flask
@@ -16,18 +17,18 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    head = generate_head_html()
-    foot = generate_foot_html()
+    head_html = generate_head_html()
+    foot_html = generate_foot_html()
 
     form_html = generate_form_html("zip_code", "time_in_days", "living_area_in_square_feet", "year_built", "number_of_beds", "full_baths", "half_baths")
 
-    final_html = head + form_html + foot
+    final_html = head_html + form_html + foot_html
     return final_html
 
 @app.route("/prediction/")
 def prediction():
-    head = generate_head_html()
-    foot = generate_foot_html()
+    head_html = generate_head_html()
+    foot_html = generate_foot_html()
 
     zip_code = str(escape(request.args.get("zip_code", "")))
     time = str(escape(request.args.get("time_in_days", "")))
@@ -37,15 +38,25 @@ def prediction():
     full_bath = str(escape(request.args.get("full_baths", "")))
     half_bath = str(escape(request.args.get("half_baths", "")))
 
+    criteria_dict = {
+        "zip_code": int(zip_code),
+        "time": time,
+        "living_area": int(living_area), 
+        "year_built": int(year_built),
+        "beds": int(beds),
+        "full_bath": int(full_bath),
+        "half_bath": int(half_bath)
+        }
+    
     df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
     df = clean_data(df)
 
-    # df = comparable_homes_df(df)
+    df = comparable_homes_df(df, criteria_dict = criteria_dict)
     score, image = linear_graph(df)
 
     back_button = generate_button_html("Back")
 
-    final_html = head + score + image + back_button + foot
+    final_html = head_html + score + image + back_button + foot_html
     return final_html
 
 def convert_closing_date_to_days(dataframe, column_ID):
@@ -57,7 +68,32 @@ def convert_closing_date_to_days(dataframe, column_ID):
     temp_series = pd.Series(temp_list)
     dataframe[column_ID] = temp_series
 
-def comparable_homes_df(dataframe, zip_code = "12345"):
+def comparable_homes_df(dataframe, criteria_dict):
+    # comparable_dataframe_rows = []
+
+    # for index, row in dataframe.iterrows():
+    #     if criteria_dict["zip_code"] != row["zip_code"]:
+    #         continue
+    #     elif ((criteria_dict["living_area"] * 0.75) > row["living_area"]) or ((criteria_dict["living_area"] * 1.25) < row["living_area"]):
+    #         continue
+    #     elif ((criteria_dict["year_built"] - 20) > row["year_built"]) or ((criteria_dict["year_built"] + 20) < row["year_built"]):
+    #         continue
+    #     elif ((criteria_dict["beds"] - 2) > row["beds"]) or ((criteria_dict["beds"] + 2) < row["beds"]):
+    #         continue
+    #     elif ((criteria_dict["full_bath"] - 2) > row["full_bath"]) or ((criteria_dict["full_bath"] + 2) < row["full_bath"]):
+    #         continue
+    #     elif ((criteria_dict["half_bath"] - 1) > row["half_bath"]) or ((criteria_dict["half_bath"] + 1) < row["half_bath"]):
+    #         continue
+    #     else:
+    #         comparable_dataframe_rows.append(row)
+
+    # comparable_dataframe = pd.DataFrame()
+    # comparable_dataframe.columns = dataframe.columns.values.tolist()
+    # for row in comparable_dataframe_rows:
+    #     row.rename(columns = dataframe.columns.values.tolist())
+    #     comparable_dataframe.merge(row)
+    
+    # print(comparable_dataframe)
     comparable_dataframe = dataframe
     return comparable_dataframe
 
