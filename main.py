@@ -138,9 +138,17 @@ def generate_form_html(*criteria_list):
 
     for criteria in criteria_list:
         temp_html = "<label for = \"{}\">{}:</label>".format(criteria, criteria.title().replace("_", " "))
-        temp_html_two = "<input type = \"text\" id = \"{}\" name = \"{}\">".format(criteria, criteria)
+
+        if criteria == "zip_code":
+            temp_html += "<select id = \"{}\" name = \"{}\">".format(criteria, criteria)
+            temp_html += "<option value = \"27519\">27519</option>"
+            temp_html += "</select>"
+        else:
+            temp_html += "<input type = \"text\" id = \"{}\" name = \"{}\">".format(criteria, criteria)
+        
         new_line_html = "<br>"
-        generated_form_html += temp_html + temp_html_two + new_line_html
+        
+        generated_form_html += temp_html + new_line_html
 
     generated_form_html += "<input type = \"submit\" value = \"Submit\"> </form>"
     
