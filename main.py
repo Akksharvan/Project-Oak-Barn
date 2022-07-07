@@ -69,23 +69,26 @@ def convert_closing_date_to_days(dataframe, column_ID):
     dataframe[column_ID] = temp_series
 
 def comparable_homes_df(dataframe, criteria_dict):
-    # comparable_dataframe_rows = []
+    comparable_dataframe_rows = []
 
-    # for index, row in dataframe.iterrows():
-    #     if criteria_dict["zip_code"] != row["zip_code"]:
-    #         continue
-    #     elif ((criteria_dict["living_area"] * 0.75) > row["living_area"]) or ((criteria_dict["living_area"] * 1.25) < row["living_area"]):
-    #         continue
-    #     elif ((criteria_dict["year_built"] - 20) > row["year_built"]) or ((criteria_dict["year_built"] + 20) < row["year_built"]):
-    #         continue
-    #     elif ((criteria_dict["beds"] - 2) > row["beds"]) or ((criteria_dict["beds"] + 2) < row["beds"]):
-    #         continue
-    #     elif ((criteria_dict["full_bath"] - 2) > row["full_bath"]) or ((criteria_dict["full_bath"] + 2) < row["full_bath"]):
-    #         continue
-    #     elif ((criteria_dict["half_bath"] - 1) > row["half_bath"]) or ((criteria_dict["half_bath"] + 1) < row["half_bath"]):
-    #         continue
-    #     else:
-    #         comparable_dataframe_rows.append(row)
+    for index, row in dataframe.iterrows():
+        if criteria_dict["zip_code"] != row["zip_code"]:
+            continue
+        elif ((criteria_dict["living_area"] * 0.75) > row["living_area"]) or ((criteria_dict["living_area"] * 1.25) < row["living_area"]):
+            continue
+        elif ((criteria_dict["year_built"] - 20) > row["year_built"]) or ((criteria_dict["year_built"] + 20) < row["year_built"]):
+            continue
+        elif ((criteria_dict["beds"] - 2) > row["beds"]) or ((criteria_dict["beds"] + 2) < row["beds"]):
+            continue
+        elif ((criteria_dict["full_bath"] - 2) > row["full_bath"]) or ((criteria_dict["full_bath"] + 2) < row["full_bath"]):
+            continue
+        elif ((criteria_dict["half_bath"] - 1) > row["half_bath"]) or ((criteria_dict["half_bath"] + 1) < row["half_bath"]):
+            continue
+        else:
+            comparable_row = row.to_numpy()
+            comparable_dataframe_rows.append(comparable_row)
+        
+        print(*comparable_dataframe_rows, sep = "\n")
 
     # comparable_dataframe = pd.DataFrame()
     # comparable_dataframe.columns = dataframe.columns.values.tolist()
