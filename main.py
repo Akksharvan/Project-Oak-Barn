@@ -40,7 +40,7 @@ def prediction():
 
     criteria_dict = {
         "zip_code": int(zip_code),
-        "time": time,
+        "time": int(time),
         "living_area": int(living_area), 
         "year_built": int(year_built),
         "beds": int(beds),
@@ -52,21 +52,12 @@ def prediction():
     df = clean_data(df)
 
     df = comparable_homes_df(df, criteria_dict = criteria_dict)
-    score, image = linear_graph(df)
+    prediction, score, image = linear_graph(df)
 
     back_button = generate_button_html("Back")
 
-    final_html = head_html + score + image + back_button + foot_html
+    final_html = head_html + prediction + score + image + back_button + foot_html
     return final_html
-
-def convert_closing_date_to_days(dataframe, column_ID):
-    temp_list = []
-
-    for index, value in dataframe[column_ID].items():
-        temp_list.append(value.days)
-
-    temp_series = pd.Series(temp_list)
-    dataframe[column_ID] = temp_series
 
 def comparable_homes_df(dataframe, criteria_dict):
     comparable_dataframe_rows = []
@@ -95,6 +86,15 @@ def comparable_homes_df(dataframe, criteria_dict):
 
     return comparable_dataframe
 
+def convert_closing_date_to_days(dataframe, column_ID):
+    temp_list = []
+
+    for index, value in dataframe[column_ID].items():
+        temp_list.append(value.days)
+
+    temp_series = pd.Series(temp_list)
+    dataframe[column_ID] = temp_series
+
 def clean_data(dataframe):
     temp_df = dataframe
 
@@ -105,13 +105,18 @@ def clean_data(dataframe):
     temp_df.drop(columns = "Closing Date")
     return temp_df
 
-def linear_graph(dataframe):
+def linear_graph(dataframe, time = 0):
     df = dataframe
     x = df[["Days Since 1950"]]
     y = df[["Sold Price"]]
 
+    today = pd.Timestamp.now() - pd.Timestamp(1950, 1, 1)
+    today_days = today.days
+
     reg = linear_model.LinearRegression()
     reg.fit(x, y)
+
+    prediction = "<p>Predicted Price After {} Days: ${}".format(str(today_days + time), str(reg.predict(today_days + time)))
     score = "<p>Prediction Score: {}%</p>".format(str(round(reg.score(x, y)*100, 2)))
 
     fig = Figure()
@@ -124,7 +129,7 @@ def linear_graph(dataframe):
     fig_data = base64.b64encode(buf.getbuffer()).decode("ascii")
     fig_image = "<img src = 'data:image/png;base64, {}'/>".format(fig_data)
     
-    return (score, fig_image)
+    return (prediction, score, fig_image)
 
 def generate_form_html(*criteria_list):
     generated_form_html = "<form action = \"/prediction\" method = \"get\">"
