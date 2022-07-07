@@ -3,8 +3,8 @@ from email import header
 from inspect import formatannotation
 from flask import Flask
 from flask import request, escape
-import fontTools
 
+import numpy as np
 import pandas as pd
 
 import base64
@@ -107,8 +107,10 @@ def clean_data(dataframe):
 
 def linear_graph(dataframe, time = 0):
     df = dataframe
-    x = df[["Days Since 1950"]]
-    y = df[["Sold Price"]]
+    x = np.array(df["Days Since 1950"]).reshape(-1, 1)
+    y = np.array(df["Sold Price"]).reshape(-1, 1)
+
+    print(x, "\n", y)
 
     today = pd.Timestamp.now() - pd.Timestamp(1950, 1, 1)
     today_days = today.days
@@ -116,8 +118,8 @@ def linear_graph(dataframe, time = 0):
     reg = linear_model.LinearRegression()
     reg.fit(x, y)
 
-    prediction = "<p>Predicted Price After {} Days: ${}".format(str(today_days + time), str(reg.predict(today_days + time)))
-    score = "<p>Prediction Score: {}%</p>".format(str(round(reg.score(x, y)*100, 2)))
+    prediction = "<p>Predicted Price After {} Days: ${}".format(str(today_days + time), round(reg.predict([[30000]])[0][0], 2))
+    score = "<p>Prediction Score: {}%</p>".format(round(reg.score(x, y)*100, 2))
 
     fig = Figure()
     ax = fig.subplots()
@@ -135,7 +137,7 @@ def generate_form_html(*criteria_list):
     generated_form_html = "<form action = \"/prediction\" method = \"get\">"
 
     for criteria in criteria_list:
-        temp_html = "<label for = \"{}\">{}: </label>".format(criteria, criteria.title().replace("_", " "))
+        temp_html = "<label for = \"{}\">{}:</label>".format(criteria, criteria.title().replace("_", " "))
         temp_html_two = "<input type = \"text\" id = \"{}\" name = \"{}\">".format(criteria, criteria)
         new_line_html = "<br>"
         generated_form_html += temp_html + temp_html_two + new_line_html
@@ -161,11 +163,13 @@ def generate_head_html():
     head += "<link rel = \"stylesheet\" href = \"/static/styles/styles.css\">"
     head += "</head>"
     head += "<body>"
+
     return head
 
 def generate_foot_html():
     foot = "</body>"
     foot += "</html>"
+
     return foot
 
 if __name__ == "__main__":
