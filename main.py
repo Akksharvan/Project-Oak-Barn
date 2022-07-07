@@ -87,17 +87,12 @@ def comparable_homes_df(dataframe, criteria_dict):
         else:
             comparable_row = row.to_numpy()
             comparable_dataframe_rows.append(comparable_row)
-        
-        print(*comparable_dataframe_rows, sep = "\n")
 
-    # comparable_dataframe = pd.DataFrame()
-    # comparable_dataframe.columns = dataframe.columns.values.tolist()
-    # for row in comparable_dataframe_rows:
-    #     row.rename(columns = dataframe.columns.values.tolist())
-    #     comparable_dataframe.merge(row)
-    
-    # print(comparable_dataframe)
-    comparable_dataframe = dataframe
+    comparable_dataframe = pd.DataFrame(comparable_dataframe_rows)
+
+    comparable_dataframe_columns = dataframe.columns.to_numpy()
+    comparable_dataframe.columns = comparable_dataframe_columns
+
     return comparable_dataframe
 
 def clean_data(dataframe):
