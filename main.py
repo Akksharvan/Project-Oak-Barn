@@ -45,7 +45,7 @@ def prediction():
         "half_bath": int(half_bath)
         }
     
-    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["Closing Date"])
+    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["closing_date"])
     df = clean_data(df)
 
     df = comparable_homes_df(df, criteria_dict = criteria_dict)
@@ -95,17 +95,17 @@ def convert_closing_date_to_days(dataframe, column_ID):
 def clean_data(dataframe):
     temp_df = dataframe
 
-    time_series = temp_df["Closing Date"] - pd.Timestamp(1950, 1, 1)
-    temp_df["Days Since 1950"] = time_series
+    time_series = temp_df["closing_date"] - pd.Timestamp(1950, 1, 1)
+    temp_df["days_since_1950"] = time_series
 
-    convert_closing_date_to_days(temp_df, "Days Since 1950")
-    temp_df.drop(columns = "Closing Date")
+    convert_closing_date_to_days(temp_df, "days_since_1950")
+    temp_df.drop(columns = "closing_date")
     return temp_df
 
 def linear_graph(dataframe, time = 0):
     df = dataframe
-    x = np.array(df["Days Since 1950"]).reshape(-1, 1)
-    y = np.array(df["Sold Price"]).reshape(-1, 1)
+    x = np.array(df["days_since_1950"]).reshape(-1, 1)
+    y = np.array(df["sold_price"]).reshape(-1, 1)
 
     today = pd.Timestamp.now() - pd.Timestamp(1950, 1, 1)
 
