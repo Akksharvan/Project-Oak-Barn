@@ -45,7 +45,7 @@ def prediction():
         "half_bath": int(half_bath)
         }
     
-    df = pd.read_csv("Real Estate Data.csv", parse_dates = ["closing_date"])
+    df = pd.read_csv("data/27519.csv", parse_dates = ["closing_date"])
     df = clean_data(df)
 
     df = comparable_homes_df(df, criteria_dict = criteria_dict)
@@ -104,8 +104,8 @@ def clean_data(dataframe):
 
 def linear_graph(dataframe, time = 0):
     df = dataframe
-    x = np.array(df["days_since_1950"]).reshape(-1, 1)
-    y = np.array(df["sold_price"]).reshape(-1, 1)
+    x = df[["days_since_1950"]].to_numpy()
+    y = df[["sold_price"]].to_numpy()
 
     today = pd.Timestamp.now() - pd.Timestamp(1950, 1, 1)
 
