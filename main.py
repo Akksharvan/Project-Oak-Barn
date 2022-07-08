@@ -52,7 +52,7 @@ def prediction():
     df = clean_data(df)
 
     df = comparable_homes_df(df, criteria_dict = criteria_dict)
-    prediction, score, image = linear_graph(df)
+    prediction, score, image = linear_graph(df, criteria_dict["time"])
 
     back_button = generate_button_html("Back")
 
@@ -110,15 +110,12 @@ def linear_graph(dataframe, time = 0):
     x = np.array(df["Days Since 1950"]).reshape(-1, 1)
     y = np.array(df["Sold Price"]).reshape(-1, 1)
 
-    print(x, "\n", y)
-
     today = pd.Timestamp.now() - pd.Timestamp(1950, 1, 1)
-    today_days = today.days
 
     reg = linear_model.LinearRegression()
     reg.fit(x, y)
 
-    prediction = "<p>Predicted Price After {} Days: ${}".format(str(today_days + time), round(reg.predict([[30000]])[0][0], 2))
+    prediction = "<p>Predicted Price After {} Days: ${:,.2f}".format(time, round(reg.predict([[today.days + time]])[0][0], 2))
     score = "<p>Prediction Score: {}%</p>".format(round(reg.score(x, y)*100, 2))
 
     fig = Figure()
