@@ -47,7 +47,6 @@ def prediction():
     
     data_location = get_data_location(criteria_dict["zip_code"])
     df = pd.read_csv(data_location, parse_dates = ["closing_date"])
-    df = clean_data(df)
 
     df = comparable_homes_df(df, criteria_dict = criteria_dict)
     prediction, score, image = linear_graph(df, criteria_dict["time"], criteria_dict["living_area"], criteria_dict["year_built"], criteria_dict["beds"], criteria_dict["full_bath"], criteria_dict["half_bath"])
@@ -83,25 +82,6 @@ def comparable_homes_df(dataframe, criteria_dict):
 def get_data_location(zip_code):
     data_location = "data/{}.csv".format(zip_code)
     return data_location
-
-def convert_closing_date_to_days(dataframe, column_ID):
-    temp_list = []
-
-    for index, value in dataframe[column_ID].items():
-        temp_list.append(value.days)
-
-    temp_series = pd.Series(temp_list)
-    dataframe[column_ID] = temp_series
-
-def clean_data(dataframe):
-    temp_df = dataframe
-
-    time_series = temp_df["closing_date"] - pd.Timestamp(1950, 1, 1)
-    temp_df["days_since_1950"] = time_series
-
-    convert_closing_date_to_days(temp_df, "days_since_1950")
-    temp_df.drop(columns = "closing_date")
-    return temp_df
 
 def linear_graph(dataframe, time, living_area, year_built, beds, full_bath, half_bath):
     df = dataframe
