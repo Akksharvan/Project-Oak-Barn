@@ -17,7 +17,7 @@ def index():
     head_html = generate_head_html()
     foot_html = generate_foot_html()
 
-    form_html = generate_form_html("zip_code", "time_in_days", "living_area_in_square_feet", "year_built", "number_of_beds", "full_baths", "half_baths")
+    form_html = generate_form_html("zip_code", "property_type", "time_in_days", "living_area_in_square_feet", "year_built", "number_of_beds", "full_baths", "half_baths")
 
     final_html = head_html + form_html + foot_html
     return final_html
@@ -28,6 +28,7 @@ def prediction():
     foot_html = generate_foot_html()
 
     zip_code = str(escape(request.args.get("zip_code", "")))
+    property_type = str(escape(request("property_type", "")))
     time = str(escape(request.args.get("time_in_days", "")))
     living_area = str(escape(request.args.get("living_area_in_square_feet", "")))
     year_built = str(escape(request.args.get("year_built", "")))
@@ -37,6 +38,7 @@ def prediction():
 
     criteria_dict = {
         "zip_code": int(zip_code),
+        "property_type": property_type,
         "time": int(time),
         "living_area": int(living_area), 
         "year_built": int(year_built),
@@ -59,16 +61,18 @@ def prediction():
 def comparable_homes_df(dataframe, criteria_dict):
     comparable_dataframe_rows = []
 
-    for index, row in dataframe.iterrows():
-        if ((criteria_dict["living_area"] * 0.75) > row["living_area"]) or ((criteria_dict["living_area"] * 1.25) < row["living_area"]):
+    for row_tuple in dataframe.iterrows():
+        if criteria_dict["property_type"] != row_tuple[0]["property_type"]:
             continue
-        elif ((criteria_dict["year_built"] - 20) > row["year_built"]) or ((criteria_dict["year_built"] + 20) < row["year_built"]):
+        elif ((criteria_dict["living_area"] * 0.75) > row_tuple[0]["living_area"]) or ((criteria_dict["living_area"] * 1.25) < row_tuple[0]["living_area"]):
             continue
-        elif ((criteria_dict["beds"] - 2) > row["beds"]) or ((criteria_dict["beds"] + 2) < row["beds"]):
+        elif ((criteria_dict["year_built"] - 20) > row_tuple[0]["year_built"]) or ((criteria_dict["year_built"] + 20) < row_tuple[0]["year_built"]):
             continue
-        elif ((criteria_dict["full_bath"] - 2) > row["full_bath"]) or ((criteria_dict["full_bath"] + 2) < row["full_bath"]):
+        elif ((criteria_dict["beds"] - 2) > row_tuple[0]["beds"]) or ((criteria_dict["beds"] + 2) < row_tuple[0]["beds"]):
             continue
-        elif ((criteria_dict["half_bath"] - 1) > row["half_bath"]) or ((criteria_dict["half_bath"] + 1) < row["half_bath"]):
+        elif ((criteria_dict["full_bath"] - 2) > row_tuple[0]["full_bath"]) or ((criteria_dict["full_bath"] + 2) < row_tuple[0]["full_bath"]):
+            continue
+        elif ((criteria_dict["half_bath"] - 1) > row_tuple[0]["half_bath"]) or ((criteria_dict["half_bath"] + 1) < row_tuple[0]["half_bath"]):
             continue
         else:
             comparable_row = row.to_numpy()
@@ -131,7 +135,7 @@ def generate_form_html(*criteria_list):
     for criteria in criteria_list:
         temp_html = "<label for = \"{}\">{}:</label>".format(criteria, criteria.title().replace("_", " "))
 
-        if criteria == "zip_code":
+        if criteria == "zip_code" or criteria == "property_type":
             temp_html += "<select id = \"{}\" name = \"{}\">".format(criteria, criteria)
             temp_html += "<option value = \"27519\">27519</option>"
             temp_html += "</select>"
