@@ -123,10 +123,6 @@ def linear_graph(dataframe, time, living_area, year_built, beds, full_bath, half
     score = reg.score(X, y) * 100
     score = "<p>Prediction Score: {:.2f}%</p>".format(score)
 
-    intercept = reg.intercept_
-    coefficient = reg.coef_
-
-    print(coefficient)
     # x_array = np.array([1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020, 2030])
     # y_array = np.array([])
 
