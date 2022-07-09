@@ -45,11 +45,12 @@ def prediction():
         "half_bath": int(half_bath)
         }
     
-    df = pd.read_csv("data/27519.csv", parse_dates = ["closing_date"])
+    data_location = get_data_location(criteria_dict["zip_code"])
+    df = pd.read_csv(data_location, parse_dates = ["closing_date"])
     df = clean_data(df)
 
     df = comparable_homes_df(df, criteria_dict = criteria_dict)
-    prediction, score, image = linear_graph(df, criteria_dict["time"])
+    prediction, score, image = linear_graph(df, criteria_dict["time"], criteria_dict["living_area"], criteria_dict["year_built"], criteria_dict["beds"], criteria_dict["full_bath"], criteria_dict["half_bath"])
 
     back_button = generate_button_html("Back")
 
@@ -60,9 +61,7 @@ def comparable_homes_df(dataframe, criteria_dict):
     comparable_dataframe_rows = []
 
     for index, row in dataframe.iterrows():
-        if criteria_dict["zip_code"] != row["zip_code"]:
-            continue
-        elif ((criteria_dict["living_area"] * 0.75) > row["living_area"]) or ((criteria_dict["living_area"] * 1.25) < row["living_area"]):
+        if ((criteria_dict["living_area"] * 0.75) > row["living_area"]) or ((criteria_dict["living_area"] * 1.25) < row["living_area"]):
             continue
         elif ((criteria_dict["year_built"] - 20) > row["year_built"]) or ((criteria_dict["year_built"] + 20) < row["year_built"]):
             continue
@@ -77,11 +76,13 @@ def comparable_homes_df(dataframe, criteria_dict):
             comparable_dataframe_rows.append(comparable_row)
 
     comparable_dataframe = pd.DataFrame(comparable_dataframe_rows)
-
-    comparable_dataframe_columns = dataframe.columns.to_numpy()
-    comparable_dataframe.columns = comparable_dataframe_columns
+    comparable_dataframe.columns = dataframe.columns.to_numpy()
 
     return comparable_dataframe
+
+def get_data_location(zip_code):
+    data_location = "data/{}.csv".format(zip_code)
+    return data_location
 
 def convert_closing_date_to_days(dataframe, column_ID):
     temp_list = []
@@ -102,22 +103,43 @@ def clean_data(dataframe):
     temp_df.drop(columns = "closing_date")
     return temp_df
 
-def linear_graph(dataframe, time = 0):
+def linear_graph(dataframe, time, living_area, year_built, beds, full_bath, half_bath):
     df = dataframe
-    x = df[["days_since_1950"]].to_numpy()
+    iv_list = [time, living_area, year_built, beds, full_bath, half_bath]
+
+    X = df[["days_since_1950", "living_area", "year_built", "beds", "full_bath", "half_bath"]].to_numpy()
     y = df[["sold_price"]].to_numpy()
 
     today = pd.Timestamp.now() - pd.Timestamp(1950, 1, 1)
+    iv_list[0] = today.days + time
 
     reg = linear_model.LinearRegression()
-    reg.fit(x, y)
+    reg.fit(X, y)
 
-    prediction = "<p>Predicted Price After {} Days: ${:,.2f}".format(time, round(reg.predict([[today.days + time]])[0][0], 2))
-    score = "<p>Prediction Score: {}%</p>".format(round(reg.score(x, y)*100, 2))
+
+    prediction = reg.predict([iv_list])[0][0]
+    prediction = "<p>Predicted Price After {} Days: ${:,.2f}".format(time, prediction)
+
+    score = reg.score(X, y) * 100
+    score = "<p>Prediction Score: {:.2f}%</p>".format(score)
+
+    intercept = reg.intercept_
+    coefficient = reg.coef_
+
+    print(coefficient)
+    # x_array = np.array([1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020, 2030])
+    # y_array = np.array([])
+
+    # for point in x_array:
+    #     temp_y = intercept + (coefficient * point)
+    #     y_array = np.append(y_array, temp_y)
+    
+    # print(x_array)
+    # print(y_array)
 
     fig = Figure()
     ax = fig.subplots()
-    ax.plot(x, reg.predict(x), "black")
+    # ax.plot(x_array, y_array, "black")
 
     buf = BytesIO()
     fig.savefig(buf, format = "png")
