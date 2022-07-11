@@ -1,4 +1,4 @@
-living_area,year_built,beds,full_bath,half_bath,property_type,list_price,list_oruce_per_sq_ft,sold_price,sold_price_per_sq_ft,Living Area Above Grade,price_per_sq_ft,list_date,closing_date
+living_area,year_built,beds,full_bath,half_bath,property_type,list_price,list_price_per_sq_ft,sold_price,sold_price_per_sq_ft,living_area_above_ground,price_per_sq_ft,list_date,closing_date
 "1,741",2004,3,2,1,Attached,"$1,250.00",$0.72,"$1,250.00",$0.72,"1,741",$0.72,4/17/2006,7/1/2006
 "1,278",1912,2,1,0,Detached,"$99,000.00",$77.46,"$62,000.00",$48.51,"1,278",$48.51,5/2/2007,9/13/2007
 935,1940,2,1,0,Detached,"$79,990.00",$85.55,"$65,000.00",$69.52,935,$69.52,3/15/2013,5/13/2013

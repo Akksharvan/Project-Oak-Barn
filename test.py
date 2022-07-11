@@ -1,27 +1,29 @@
-# import numpy as np
-# import pandas as pd
+import numpy as np
+import pandas as pd
 
-# from matplotlib.figure import Figure
-# from sklearn.linear_model import LinearRegression
+from matplotlib.figure import Figure
+from sklearn.linear_model import LinearRegression
 
-# import base64
-# from io import BytesIO
+import base64
+from io import BytesIO
 
-# def closing_date_to_days(dataframe):
-#     temp_list = []
-#     for value in dataframe["closing_date"]:
-#         time = value - pd.Timestamp(1950, 1, 1)
-#         temp_list.append(time.days)
+def closing_date_to_days(dataframe):
+    temp_list = []
+    for value in dataframe["closing_date"]:
+        time = value - pd.Timestamp(1950, 1, 1)
+        temp_list.append(time.days)
     
-#     temp_series = pd.Series(temp_list)
-#     dataframe["closing_date"] = temp_series
+    temp_series = pd.Series(temp_list)
+    dataframe["closing_date"] = temp_series
 
-# zip_code = 27519
-# data_location = "data/{}.csv".format(zip_code)
-# date_columns = ["list_date", "closing_date"]
+zip_code = 27519
+data_location = "data/{} - 2.csv".format(zip_code)
+date_columns = ["list_date", "closing_date"]
 
-# df = pd.read_csv(data_location, parse_dates = date_columns)
-# closing_date_to_days(df)
+df = pd.read_csv(data_location, parse_dates = date_columns)
+closing_date_to_days(df)
+
+
 
 # X = df[["closing_date", "beds"]].to_numpy()
 # y = df[["sold_price"]]
