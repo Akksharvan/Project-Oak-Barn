@@ -131,16 +131,34 @@ def linear_graph(dataframe, time, living_area, year_built, beds, full_bath, half
 
 def generate_form_html(*criteria_list):
     generated_form_html = "<form action = \"/prediction\" method = \"get\">"
+    excepted_list = ["zip_code", "property_type", "year_built", "beds", "full_bath", "half_bath"]
 
     for criteria in criteria_list:
         temp_html = "<label for = \"{}\">{}:</label>".format(criteria, criteria.title().replace("_", " "))
 
-        if criteria == "zip_code" or criteria == "property_type":
+        if criteria in excepted_list:
             temp_html += "<select id = \"{}\" name = \"{}\">".format(criteria, criteria)
+
             if criteria == "zip_code":
-                temp_html += "<option value = \"27519\">27519</option>"
+                zip_code_list = ["27519"]
+                for zip_code in zip_code_list:
+                    temp_html += "<option value = \"{0}\">{0}</option>".format(zip_code)
             elif criteria == "property_type":
-                temp_html += "<option value = \"Detached\">Detached</option>"
+                property_type_list = ["Detached"]
+                for property_type in property_type_list:
+                    temp_html += "<option value = \"{0}\">{0}</option>".format(property_type)
+            elif criteria == "year_built":
+                for number in range(2000, int(pd.Timestamp.now().year) + 1):
+                    temp_html += "<option value = \"{0}\">{0}</option>".format(number)
+            elif criteria == "beds":
+                for number in range(21):
+                    temp_html += "<option value = \"{0}\">{0}</option>".format(number)
+            elif criteria == "full_bath":
+                for number in range(21):
+                    temp_html += "<option value = \"{0}\">{0}</option>".format(number)
+            elif criteria == "half_bath":
+                for number in range(21):
+                    temp_html += "<option value = \"{0}\">{0}</option>".format(number)
             temp_html += "</select>"
         else:
             temp_html += "<input type = \"text\" id = \"{}\" name = \"{}\" required>".format(criteria, criteria)
@@ -170,6 +188,7 @@ def generate_head_html():
     head += "<link rel = \"stylesheet\" href = \"/static/styles/main.css\">"
     head += "</head>"
     head += "<body>"
+    head += "<h1>Home Price Predictor</h1>"
 
     return head
 
