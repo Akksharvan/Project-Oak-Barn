@@ -17,7 +17,7 @@ def index():
     head_html = generate_head_html()
     foot_html = generate_foot_html()
 
-    form_html = generate_form_html("zip_code", "property_type", "time_in_days", "living_area_in_square_feet", "year_built", "number_of_beds", "full_baths", "half_baths")
+    form_html = generate_form_html("zip_code", "property_type", "time_in_days", "living_area", "year_built", "beds", "full_bath", "half_bath")
 
     final_html = head_html + form_html + foot_html
     return final_html
@@ -30,11 +30,11 @@ def prediction():
     zip_code = str(escape(request.args.get("zip_code", "")))
     property_type = str(escape(request.args.get("property_type", "")))
     time = str(escape(request.args.get("time_in_days", "")))
-    living_area = str(escape(request.args.get("living_area_in_square_feet", "")))
+    living_area = str(escape(request.args.get("living_area", "")))
     year_built = str(escape(request.args.get("year_built", "")))
-    beds = str(escape(request.args.get("number_of_beds", "")))
-    full_bath = str(escape(request.args.get("full_baths", "")))
-    half_bath = str(escape(request.args.get("half_baths", "")))
+    beds = str(escape(request.args.get("beds", "")))
+    full_bath = str(escape(request.args.get("full_bath", "")))
+    half_bath = str(escape(request.args.get("half_bath", "")))
 
     criteria_dict = {
         "zip_code": int(zip_code),
@@ -143,7 +143,7 @@ def generate_form_html(*criteria_list):
                 temp_html += "<option value = \"Detached\">Detached</option>"
             temp_html += "</select>"
         else:
-            temp_html += "<input type = \"text\" id = \"{}\" name = \"{}\">".format(criteria, criteria)
+            temp_html += "<input type = \"text\" id = \"{}\" name = \"{}\" required>".format(criteria, criteria)
         
         new_line_html = "<br>"
         
@@ -167,7 +167,7 @@ def generate_head_html():
     head += "<html>"
     head += "<head>"
     head += "<title>House Price Predictor</title>"
-    head += "<link rel = \"stylesheet\" href = \"/static/styles/styles.css\">"
+    head += "<link rel = \"stylesheet\" href = \"/static/styles/main.css\">"
     head += "</head>"
     head += "<body>"
 
