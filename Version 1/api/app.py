@@ -1,13 +1,16 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+import xgboost
+import pandas
 
-import xgboost as xgb
-import pandas as pd
+from flask import Flask
+from flask import request
+from flask import jsonify
+
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-model = xgb.Booster(model_file='/Users/akksharvan/workspace/Project-Oak-Barn/Version 1/models/xgb_model.model')
+model = xgboost.Booster(model_file='/Users/akksharvan/workspace/Project-Oak-Barn/Version 1/models/xgb_model.model')
 
 @app.route('/predict', methods=['POST'])
 def predict():
