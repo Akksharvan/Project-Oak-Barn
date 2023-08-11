@@ -8,7 +8,7 @@ data = pandas.read_csv(str(Path().absolute().absolute()) + "/data/27519.csv")
 parameters = ['beds', 'full_bath', 'living_area_above_ground', 'living_area', 'year_built']
 
 X = data[parameters]
-y = data["sold_price_per_sq_ft"]
+y = data["sold_price"]
 
 X_train, X_valid, y_train, y_valid = train_test_split(X, y)
 

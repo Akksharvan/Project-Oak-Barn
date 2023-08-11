@@ -61,27 +61,35 @@ const HousePricePredictor = () => {
           value = {formData.beds}
           onChange = {handleInputChange}
         />
-        <InputField
+      </div>
+      <div className = "input-container">
+      <InputField
           label = "Full Bath:"
-          name = "full baths"
+          name = "full_bath"
           value = {formData.full_bath}
           onChange = {handleInputChange}
         />
-        <InputField
+      </div>
+      <div className = "input-container">
+      <InputField
           label = "Living Area Above Ground:"
-          name = "living area above ground"
+          name = "living_area_above_ground"
           value = {formData.living_area_above_ground}
           onChange = {handleInputChange}
         />
-        <InputField
+      </div>
+      <div className = "input-container">
+      <InputField
           label = "Total Living Area:"
-          name = "living area"
+          name = "living_area"
           value = {formData.living_area}
           onChange = {handleInputChange}
         />
-        <InputField
-          label = "Year Built::"
-          name = "year built"
+      </div>
+      <div className = "input-container">
+      <InputField
+          label = "Year Built:"
+          name = "year_built"
           value = {formData.year_built}
           onChange = {handleInputChange}
         />
