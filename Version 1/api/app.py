@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 model_path = str(Path().absolute().absolute()) + "/models/price_predictor.model"
-model = xgboost.Booster(model_file = "/Users/akksharvan/workspace/Project-Oak-Barn/Version 1/models/price_predictor.model")
+model = xgboost.Booster(model_file = model_path)
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -21,7 +21,6 @@ def predict():
         input_data[col] = pd.to_numeric(input_data[col])
 
     prediction = model.predict(xgboost.DMatrix(input_data))
-    return jsonify({'prediction': 0})
     return jsonify({'prediction': prediction.tolist()})
     
 
