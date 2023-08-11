@@ -4,22 +4,26 @@ import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from pathlib import Path
+
 app = Flask(__name__)
 CORS(app)
 
-model = xgboost.Booster(model_file='/Users/akksharvan/workspace/Project-Oak-Barn/Version 1/models/xgb_model.model')
+model_path = str(Path().absolute().absolute()) + "/models/price_predictor.model"
+model = xgboost.Booster(model_file = "/Users/akksharvan/workspace/Project-Oak-Barn/Version 1/models/price_predictor.model")
 
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json
     input_data = pd.DataFrame(data, index = [0])
 
-    app.logger.info(input_data)
+    for col in input_data.columns:
+        input_data[col] = pd.to_numeric(input_data[col])
 
-    dmatrix = xgboost.DMatrix(input_data)
-    prediction = model.predict(dmatrix)
-
+    prediction = model.predict(xgboost.DMatrix(input_data))
+    return jsonify({'prediction': 0})
     return jsonify({'prediction': prediction.tolist()})
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
