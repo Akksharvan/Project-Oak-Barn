@@ -1,0 +1,63 @@
+.predictor-container {
+    background-color: #f8f8f8;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .predictor-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .input-field {
+    margin-bottom: 10px;
+  }
+  
+  .input-field label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .input-field input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .predict-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .predict-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .prediction-result {
+    margin-top: 20px;
+  }
+  
+  .prediction-result h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .prediction-result p {
+    font-size: 18px;
+    color: #007bff;
+  }
