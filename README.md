@@ -1,7 +1,5 @@
 # Project Oak Barn - House Price Prediction Web App
 
-![Project Oak Barn](project_oak_barn_image.jpg)
-
 ## Overview
 
 Welcome to Project Oak Barn! This repository hosts the source code for a web application that predicts house prices in the 27519 Cary zip code area. The app combines a React frontend, a Python API, and an XGBoost machine learning model to provide accurate price estimates for houses based on features such as year built, living area, number of bedrooms, and number of bathrooms.
@@ -38,11 +36,3 @@ We welcome contributions to enhance the features and capabilities of the Project
 2. Create a new branch for your feature or enhancement.
 3. Make your changes and commit them.
 4. Submit a pull request detailing your changes.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-Thank you for using the Project Oak Barn House Price Prediction Web App! If you have any questions or suggestions, please feel free to contact us.
