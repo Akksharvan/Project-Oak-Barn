@@ -14,7 +14,6 @@ The Project Oak Barn web app offers the following features:
 
 - User-friendly interface for entering house details.
 - Instant price prediction based on provided features.
-- Visual representation of predicted prices.
 
 ## Components
 
